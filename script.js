@@ -276,8 +276,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleGeneratorUI = (type) => {
         currentGeneratorType = type;
         const isVCard = type === 'vcard';
-        vcardFieldsContainer.classList.toggle('hidden', !isVCard);
+
         whatsappFieldsContainer.classList.toggle('hidden', isVCard);
+        vcardFieldsContainer.classList.toggle('hidden', !isVCard);
         
         updatePreview();
         gerarBtnText.textContent = isVCard ? 'Gerar QR Code de Contato' : 'Gerar Link e QR Code';
@@ -307,8 +308,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             numeroWhatsappErrorSpan.textContent = '';
+            
             const shouldTrack = isTrackingChecked;
             const destinationUrl = `https://wa.me/${itiWhatsapp.getNumber().replace(/\D/g, '')}?text=${encodeURIComponent(mensagemInput.value)}`;
+
             if (shouldTrack) {
                 const linkId = Math.random().toString(36).substr(2, 8);
                 const trackableLink = `${window.location.origin}${window.location.pathname}#/track/${linkId}`;
@@ -331,6 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             numeroVCardErrorSpan.textContent = '';
+
             const firstName = vcardFirstNameInput.value.trim();
             const lastName = vcardLastNameInput.value.trim();
             if (!firstName || !lastName) {
@@ -340,28 +344,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const middleName = vcardMiddleNameInput.value.trim();
             const nickname = vcardNicknameInput.value.trim();
             const formattedName = `${firstName} ${middleName} ${lastName}`.replace(/\s+/g, ' ').trim();
-            let vCardString = `BEGIN:VCARD\nVERSION:3.0\nN:${lastName};${firstName};${middleName};;\nFN:${formattedName}\nTEL;TYPE=CELL:${itiVCard.getNumber()}`;
+            let vCardString = `BEGIN:VCARD\nVERSION:3.0\nN:${lastName};${firstName};${middleName};;\nFN:${formattedName}`;
             if (vcardPhotoBase64) {
                 vCardString += `\nPHOTO;ENCODING=b;TYPE=JPEG:${vcardPhotoBase64}`;
             }
             if (nickname) vCardString += `\nNICKNAME:${nickname}`;
-            if (vcardEmailInput.value) vCardString += `\nEMAIL:${vcardEmailInput.value}`;
-            if (vcardCompanyInput.value) vCardString += `\nORG:${vcardCompanyInput.value}`;
-            if (vcardTitleInput.value) vCardString += `\nTITLE:${vcardTitleInput.value}`;
-            if (vcardWebsiteInput.value) vCardString += `\nURL:${vcardWebsiteInput.value}`;
-            if (vcardLinkedinInput.value) vCardString += `\nURL;type=LinkedIn:${vcardLinkedinInput.value}`;
-            if (vcardInstagramInput.value) vCardString += `\nX-SOCIALPROFILE;type=instagram:https://instagram.com/${vcardInstagramInput.value.replace('@', '')}`;
-            if (vcardTwitterInput.value) vCardString += `\nX-SOCIALPROFILE;type=twitter:https://twitter.com/${vcardTwitterInput.value.replace('@', '')}`;
-            if (vcardGithubInput.value) vCardString += `\nX-SOCIALPROFILE;type=github:https://github.com/${vcardGithubInput.value}`;
-            if (vcardTelegramInput.value) vCardString += `\nX-SOCIALPROFILE;type=telegram:${vcardTelegramInput.value.replace('@', '')}`;
-            if (vcardYoutubeInput.value) vCardString += `\nURL;type=YouTube:${vcardYoutubeInput.value}`;
-            if (vcardRedditInput.value) vCardString += `\nX-SOCIALPROFILE;type=reddit:https://www.reddit.com/user/${vcardRedditInput.value.replace('u/', '')}`;
-            if (vcardAddressInput.value || vcardCityInput.value) vCardString += `\nADR;TYPE=HOME:;;${vcardAddressInput.value};${vcardCityInput.value};;;`;
+            vCardString += `\nTEL;TYPE=CELL:${itiVCard.getNumber()}`;
+            if (vcardEmailInput.value) vCardString += `\nEMAIL:${vcardEmailInput.value.trim()}`;
+            if (vcardCompanyInput.value) vCardString += `\nORG:${vcardCompanyInput.value.trim()}`;
+            if (vcardTitleInput.value) vCardString += `\nTITLE:${vcardTitleInput.value.trim()}`;
+            if (vcardWebsiteInput.value) vCardString += `\nURL:${vcardWebsiteInput.value.trim()}`;
+            if (vcardLinkedinInput.value) vCardString += `\nURL;type=LinkedIn:${vcardLinkedinInput.value.trim()}`;
+            if (vcardInstagramInput.value) vCardString += `\nX-SOCIALPROFILE;type=instagram:https://instagram.com/${vcardInstagramInput.value.replace('@', '').trim()}`;
+            if (vcardTwitterInput.value) vCardString += `\nX-SOCIALPROFILE;type=twitter:https://twitter.com/${vcardTwitterInput.value.replace('@', '').trim()}`;
+            if (vcardGithubInput.value) vCardString += `\nX-SOCIALPROFILE;type=github:https://github.com/${vcardGithubInput.value.trim()}`;
+            if (vcardTelegramInput.value) vCardString += `\nX-SOCIALPROFILE;type=telegram:https://t.me/${vcardTelegramInput.value.replace('@', '').trim()}`;
+            if (vcardYoutubeInput.value) vCardString += `\nURL;type=YouTube:${vcardYoutubeInput.value.trim()}`;
+            if (vcardRedditInput.value) vCardString += `\nX-SOCIALPROFILE;type=reddit:https://www.reddit.com/user/${vcardRedditInput.value.replace('u/', '').trim()}`;
+            if (vcardAddressInput.value || vcardCityInput.value) {
+                vCardString += `\nADR;TYPE=HOME:;;${vcardAddressInput.value.trim()};${vcardCityInput.value.trim()};;;`;
+            }
             if (vcardNotesInput.value) vCardString += `\nNOTE:${vcardNotesInput.value.replace(/\n/g, '\\n')}`;
             vCardString += `\nEND:VCARD`;
             qrCodeData = vCardString;
             linkResultGroup.classList.add('hidden');
         }
+
         resultArea.style.display = 'flex';
         qrCodeContainer.innerHTML = '';
         const isDarkMode = body.getAttribute('data-theme') === 'dark';
@@ -402,12 +410,11 @@ document.addEventListener('DOMContentLoaded', () => {
     linkForm.addEventListener('submit', e => { e.preventDefault(); handleGeneration(); });
     generatorTypeRadios.forEach(radio => radio.addEventListener('change', e => toggleGeneratorUI(e.target.value)));
     mensagemInput.addEventListener('input', () => { processMessageForVariables(); updatePreview(); });
-    vcardFirstNameInput.addEventListener('input', updatePreview);
-    vcardLastNameInput.addEventListener('input', updatePreview);
+    [vcardFirstNameInput, vcardLastNameInput, vcardMiddleNameInput].forEach(el => el.addEventListener('input', updatePreview));
     if (trackClicksCheckbox) trackClicksCheckbox.addEventListener('change', (e) => linkNameGroup.classList.toggle('hidden', !e.target.checked));
     templateCategorySelect.addEventListener('change', e => renderTemplates(e.target.value));
     themeToggle.addEventListener('click', () => { const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; body.setAttribute('data-theme', n); localStorage.setItem('theme', n); });
-    limparBtn.addEventListener('click', () => { linkForm.reset(); resultArea.style.display = 'none'; numeroInput.classList.remove('invalid'); numeroWhatsappErrorSpan.textContent = ''; numeroVCardErrorSpan.textContent = ''; itiWhatsapp.setNumber(''); itiVCard.setNumber(''); vcardPhotoPreview.classList.add('hidden'); vcardPhotoBase64 = ''; document.querySelector('input[name="generatorType"][value="whatsapp"]').click(); toggleGeneratorUI('whatsapp'); updatePreview(); variableInputsContainer.style.display = 'none'; masterTemplateText = ''; });
+    limparBtn.addEventListener('click', () => { linkForm.reset(); resultArea.style.display = 'none'; numeroWhatsappErrorSpan.textContent = ''; numeroVCardErrorSpan.textContent = ''; itiWhatsapp.setNumber(''); itiVCard.setNumber(''); vcardPhotoPreview.classList.add('hidden'); vcardPhotoBase64 = ''; document.querySelector('input[name="generatorType"][value="whatsapp"]').click(); toggleGeneratorUI('whatsapp'); updatePreview(); variableInputsContainer.style.display = 'none'; masterTemplateText = ''; });
     abrirWppBtn.addEventListener('click', () => { if (itiWhatsapp.isValidNumber()) { window.open(`https://wa.me/${itiWhatsapp.getNumber().replace(/\D/g, '')}?text=${encodeURIComponent(mensagemInput.value)}`, '_blank'); } else { numeroWhatsappErrorSpan.textContent = 'Insira um número válido para abrir no WhatsApp.'; } });
     copiarBtn.addEventListener('click', () => copiarTexto(linkGeradoA.href, copiarBtn));
     templateListDiv.addEventListener('click', e => { if (e.target.classList.contains('template-item')) { mensagemInput.value = e.target.dataset.text; processMessageForVariables(); updatePreview(); mensagemInput.focus(); } });
@@ -421,7 +428,6 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.onload = (event) => {
             vcardPhotoPreview.src = event.target.result;
             vcardPhotoPreview.classList.remove('hidden');
-            // Remove o prefixo "data:image/jpeg;base64," para guardar apenas os dados
             vcardPhotoBase64 = event.target.result.substring(event.target.result.indexOf(',') + 1);
         };
         reader.readAsDataURL(file);
