@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador Whats Brasil | Crie Links e QR Codes para WhatsApp</title>
+    
+    <meta name="description" content="A ferramenta mais rápida e profissional para criar links de WhatsApp (wa.me) e QR Codes. Ideal para empresas e autônomos. Gratuito, seguro e de código aberto.">
+    <meta name="author" content="Carlos Henrique Tourinho Santana">
+    <meta name="keywords" content="gerador whats brasil, gerador whatsapp, link whatsapp, wa.me, qr code whatsapp, api whatsapp, carlos henrique tourinho santana, henriquetourinho">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/19.2.16/css/intlTelInput.css" />
+    
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body data-theme="light">
+
+    <header class="site-header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="#">Gerador Whats Brasil</a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#ferramenta">Ferramenta</a></li>
+                    <li><a href="#recursos">Recursos</a></li>
+                    <li><a href="#historico">Histórico</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <button id="theme-toggle" class="theme-toggle-btn" title="Mudar tema">
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="main-card">
+                <section id="ferramenta" class="main-grid-container">
+                    <div class="form-column">
+                        <h1 class="hero-title">Crie Links de WhatsApp Instantaneamente</h1>
+                        <p class="hero-subtitle">A ferramenta definitiva para gerar e compartilhar links e QR Codes para WhatsApp. Útil para vendas, convites, suporte e muito mais.</p>
+                        
+                        <div class="trust-badges">
+                            <div class="badge"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm3.5-9.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 6.5H11.5z"/></svg>100% Gratuito</div>
+                            <div class="badge"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>Seguro e Privado</div>
+                            <div class="badge"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/></svg>Rápido e Fácil</div>
+                        </div>
+
+                        <form id="link-form" class="generator-form" novalidate>
+                            <div class="form-group">
+                                <label for="numero">Número do WhatsApp</label>
+                                <input type="tel" id="numero" required placeholder="Nº de WhatsApp">
+                                <span id="numero-error" class="error-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="mensagem">Mensagem inicial (opcional)</label>
+                                <div class="formatting-toolbar">
+                                    <button type="button" id="format-bold" class="format-btn" title="Negrito (Ctrl+B)"><b>B</b></button>
+                                    <button type="button" id="format-italic" class="format-btn" title="Itálico (Ctrl+I)"><i>I</i></button>
+                                    <button type="button" id="format-strike" class="format-btn" title="Riscado (Ctrl+S)"><s>S</s></button>
+                                </div>
+                                <textarea id="mensagem" rows="5" placeholder="Inicie a conversa com uma mensagem poderosa! Ex: Olá, tenho interesse em *seus produtos* e gostaria de um catálogo."></textarea>
+                            </div>
+                            <div class="form-group template-section">
+                                <label for="template-category">Use um modelo pronto</label>
+                                <select id="template-category">
+                                    <option value="pessoal">Uso Pessoal</option>
+                                    <option value="empreendedor">Para Empreendedores</option>
+                                    <option value="empresas">Para Empresas</option>
+                                </select>
+                                <div id="template-list" class="template-list"></div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" id="gerar-btn" class="cta-button solid">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M2 2h2v2H2V2Z"/>
+                                        <path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"/>
+                                        <path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"/>
+                                        <path d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1v-1h-3Zm-4 0v-1h-1v1H7v1h2v-1h1v-1H9Zm7-1h1v1h-1v-1Z"/>
+                                    </svg>
+                                    <span>Gerar Link e QR Code</span>
+                                </button>
+                                <button type="button" id="abrir-wpp-btn" class="cta-button secondary" title="Abrir conversa no WhatsApp">
+                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                      <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5-.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                                      <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                                    </svg>
+                                </button>
+                                <button type="button" id="limpar-btn" class="cta-button secondary" title="Limpar formulário">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+
+                        <div id="result-area" class="result-area-container" style="display: none;">
+                            <div class="result-group">
+                                <p class="result-label">Link Gerado:</p>
+                                <div class="link-wrapper">
+                                    <a href="#" id="link-gerado" target="_blank" rel="noopener noreferrer"></a>
+                                    <button type="button" id="copiar-btn" title="Copiar link" aria-label="Copiar link gerado" class="icon-button"></button>
+                                </div>
+                            </div>
+                            <div class="qr-code-wrapper">
+                                <div id="qrcode-container"></div>
+                                <div class="qrcode-options">
+                                    <div class="option-group">
+                                        <label for="qr-dot-color">Cor do Código</label>
+                                        <input type="color" id="qr-dot-color" value="#000000">
+                                    </div>
+                                    <div class="option-group">
+                                        <label for="qr-bg-color">Cor do Fundo</label>
+                                        <input type="color" id="qr-bg-color" value="#ffffff">
+                                    </div>
+                                    <div class="option-group">
+                                        <label for="qr-logo-upload" class="file-upload-label">Adicionar Logo</label>
+                                        <input type="file" id="qr-logo-upload" accept="image/*" style="display: none;">
+                                    </div>
+                                    <div class="option-group download-group">
+                                        <select id="qr-download-format">
+                                            <option value="png">PNG</option>
+                                            <option value="svg">SVG</option>
+                                        </select>
+                                        <button type="button" id="qr-download-btn" class="cta-button secondary">Baixar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="preview-column">
+                        <div class="android-mockup">
+                            <div class="chat-header">
+                                <svg class="back-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                <div class="avatar"></div>
+                                <div class="contact-info">
+                                    <span class="contact-name">Novo Contato</span>
+                                    <span class="contact-status">online</span>
+                                </div>
+                            </div>
+                            <div class="chat-body">
+                                <div class="chat-date-separator"><span>Hoje</span></div>
+                                <div class="message-bubble sent">
+                                    <p id="preview-text">Sua mensagem aparecerá aqui...</p>
+                                    <div class="message-meta">
+                                        <span class="timestamp" id="preview-timestamp"></span>
+                                        <svg class="read-receipt" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                            <path d="M4.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="recursos" class="content-section">
+                    <h2 class="section-title">Uma Ferramenta, Múltiplas Vantagens</h2>
+                    <p class="section-subtitle">Descubra como o Gerador Whats pode simplificar sua vida digital e profissional.</p>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>
+                            </div>
+                            <h3 class="feature-title">Links Diretos e Rápidos</h3>
+                            <p class="feature-description">Crie links `wa.me` que abrem a conversa diretamente no app, eliminando a necessidade de salvar o contato na agenda.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            </div>
+                            <h3 class="feature-title">QR Codes Instantâneos</h3>
+                            <p class="feature-description">Gere um QR Code para seu link, ideal para materiais impressos como cartões de visita, cardápios e flyers.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            </div>
+                            <h3 class="feature-title">Modelos de Mensagem</h3>
+                            <p class="feature-description">Comece a conversa com o pé direito usando templates pré-prontos para diversas situações profissionais e pessoais.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a7 7 0 1 0 10 10"></path></svg>
+                            </div>
+                            <h3 class="feature-title">Interface Limpa e Profissional</h3>
+                            <p class="feature-description">Um design moderno e intuitivo para uma experiência de uso agradável e eficiente, com modo claro e escuro.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="historico" class="content-section">
+                    <h2 class="section-title">Histórico de Links</h2>
+                    <p class="section-subtitle">Seus últimos 10 links gerados ficam salvos aqui no seu navegador.</p>
+                    <div id="history-list-container" class="history-list-container">
+                        </div>
+                </section>
+
+
+                <section id="faq" class="content-section">
+                    <h2 class="section-title">Ainda tem Dúvidas?</h2>
+                    <p class="section-subtitle">Respostas diretas para as perguntas mais comuns sobre o nosso serviço.</p>
+                    <div class="faq-container">
+                        <details class="faq-item">
+                            <summary class="faq-question">Como funciona o gerador?</summary>
+                            <div class="faq-answer">
+                                <p>Basta inserir o número de WhatsApp com o DDD, escrever uma mensagem inicial (opcional) e clicar em "Gerar Link". A ferramenta cria um link no formato oficial da API do WhatsApp, pronto para ser compartilhado.</p>
+                            </div>
+                        </details>
+                        <details class="faq-item">
+                            <summary class="faq-question">É seguro usar este serviço?</summary>
+                            <div class="faq-answer">
+                                <p>Sim, 100% seguro. A ferramenta apenas utiliza a API pública e oficial do WhatsApp. Nenhuma informação (seu número ou mensagem) é lida, salva ou armazenada. Toda a geração acontece diretamente no seu navegador.</p>
+                            </div>
+                        </details>
+                        <details class="faq-item">
+                            <summary class="faq-question">Preciso pagar ou me cadastrar para usar?</summary>
+                            <div class="faq-answer">
+                                <p>Não. O Gerador Whats Brasil é totalmente gratuito, não exige cadastro e não possui recursos pagos ou anúncios. É um projeto de código aberto feito para a comunidade.</p>
+                            </div>
+                        </details>
+                        <details class="faq-item">
+                            <summary class="faq-question">Posso usar o QR Code em materiais de marketing?</summary>
+                            <div class="faq-answer">
+                                <p>Com certeza! O QR Code gerado é perfeito para ser usado em flyers, cartões de visita, embalagens, cardápios e qualquer outro material de divulgação para que seus clientes entrem em contato de forma rápida e moderna.</p>
+                            </div>
+                        </details>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+    
+    <section class="donation-section">
+        <div class="container">
+            <h3>Apoie a Tecnologia Livre</h3>
+            <p>Esta ferramenta é 100% gratuita e de código aberto. Se ela foi útil para você, considere fazer uma doação para apoiar a manutenção e o desenvolvimento de novas tecnologias abertas.</p>
+            <div class="pix-donation">
+                <strong>PIX:</strong> <span>poupanca@henriquetourinho.com.br</span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-social-icons">
+                <a href="https://www.instagram.com/henriquetourinhooficial/" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                <a href="https://github.com/henriquetourinho" target="_blank" rel="noopener noreferrer" class="social-icon" title="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                </a>
+                <a href="https://t.me/henriquetourinho" target="_blank" rel="noopener noreferrer" class="social-icon" title="Telegram">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13L2 9L22 2ZM22 2L15 22L11 13L22 2Z"></path></svg>
+                </a>
+                <a href="https://www.linkedin.com/in/carloshenriquetourinhosantana/" target="_blank" rel="noopener noreferrer" class="social-icon" title="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+                <a href="https://wiki.debian.org/henriquetourinho" target="_blank" rel="noopener noreferrer" class="social-icon" title="Debian Wiki">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-2.039 1.488-4.505 2.15-6.666 2.15C2.527 2.15 0 4.677 0 7.483c0 2.762 2.484 5.05 5.238 5.295-.44.755-.694 1.518-.78 2.458-.122 1.346.06 2.65.63 3.818.683 1.393 1.78 2.533 3.033 3.372 1.252.838 2.66 1.282 4.108 1.332 1.448.05 2.872-.34 4.148-1.127 1.276-.788 2.38-1.905 3.08-3.235.7-1.33 1-2.84.786-4.31-.214-1.47-.88-2.868-1.84-4.04-.962-1.173-2.228-2.1-3.66-2.668-1.43-.57-3.003-.76-4.55-.54-.153.022-.32.06-.48.092-.803.17-1.57.43-2.28.79.444-1.54.444-3.21 0-4.65.346-.06.68-.13.99-.22.42-.12.84-.28 1.27-.47 1.25-.55 2.5-1.28 3.59-2.27.78-.7 1.4-1.5 1.83-2.42C13.848 1.41 12.04 0 12 0Z"/></svg>
+                </a>
+                <a href="mailto:henriquetourinho@riseup.net" class="social-icon" title="Email">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </a>
+            </div>
+            <p class="copyright-text">&copy; 2025 Carlos Henrique Tourinho Santana. 
+                <br> <br>Construído com ❤️ em Salvador, Bahia.</p>
+        </div>
+    </footer>
+
+    <template id="history-item-template">
+        <div class="history-item">
+            <div class="history-item-info">
+                <span class="history-item-number"></span>
+                <p class="history-item-message"></p>
+            </div>
+            <div class="history-item-actions">
+                <button type="button" class="history-reuse-btn icon-button" title="Reusar dados">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+                        <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+                    </svg>
+                </button>
+                <button type="button" class="history-copy-btn icon-button" title="Copiar link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3z"/>
+                    </svg>
+                </button>
+                <button type="button" class="history-delete-btn icon-button" title="Apagar do histórico">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                         <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </template>
+    
+    <script src="https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/19.2.16/js/intlTelInput.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
