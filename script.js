@@ -1,5 +1,136 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- SISTEMA DE NOTIFICAÇÕES DE ERRO ---
+    const showErrorNotification = (message, details = '') => {
+        // Remover notificação anterior se existir
+        const existingError = document.querySelector('.error-notification');
+        if (existingError) existingError.remove();
+        
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-notification';
+        errorDiv.innerHTML = `
+            <div class="error-content">
+                <div class="error-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <span>Erro no Sistema</span>
+                    <button class="error-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+                </div>
+                <div class="error-message">${message}</div>
+                ${details ? `<details class="error-details"><summary>Detalhes técnicos</summary><pre>${details}</pre></details>` : ''}
+            </div>
+        `;
+        
+        document.body.appendChild(errorDiv);
+        
+        // Auto-remover após 10 segundos
+        setTimeout(() => {
+            if (errorDiv.parentNode) errorDiv.remove();
+        }, 10000);
+    };
+    
+    // --- SISTEMA DE LIMPEZA DE DADOS ---
+    const clearAllData = () => {
+        if (confirm('⚠️ ATENÇÃO: Esta ação irá apagar TODOS os seus dados salvos (histórico, modelos personalizados, analytics). Esta ação não pode ser desfeita. Deseja continuar?')) {
+            try {
+                localStorage.removeItem(HISTORY_KEY);
+                localStorage.removeItem(CUSTOM_TEMPLATES_KEY);
+                localStorage.removeItem(ANALYTICS_KEY);
+                localStorage.removeItem('theme');
+                
+                // Recarregar dados
+                loadAllData();
+                renderTemplates(templateCategorySelect.value);
+                
+                // Resetar tema
+                body.setAttribute('data-theme', 'light');
+                
+                // Mostrar confirmação
+                showSuccessNotification('Todos os dados foram limpos com sucesso!');
+                
+            } catch (error) {
+                showErrorNotification('Erro ao limpar dados', error.message);
+            }
+        }
+    };
+    
+    const clearHistoryData = () => {
+        if (confirm('Deseja limpar todo o histórico de links? Esta ação não pode ser desfeita.')) {
+            try {
+                localStorage.removeItem(HISTORY_KEY);
+                loadHistory();
+                showSuccessNotification('Histórico limpo com sucesso!');
+            } catch (error) {
+                showErrorNotification('Erro ao limpar histórico', error.message);
+            }
+        }
+    };
+    
+    const clearAnalyticsData = () => {
+        if (confirm('Deseja limpar todos os dados de análise? Esta ação não pode ser desfeita.')) {
+            try {
+                localStorage.removeItem(ANALYTICS_KEY);
+                loadAnalytics();
+                showSuccessNotification('Dados de análise limpos com sucesso!');
+            } catch (error) {
+                showErrorNotification('Erro ao limpar dados de análise', error.message);
+            }
+        }
+    };
+    
+    const clearCustomTemplates = () => {
+        if (confirm('Deseja limpar todos os modelos personalizados? Esta ação não pode ser desfeita.')) {
+            try {
+                localStorage.removeItem(CUSTOM_TEMPLATES_KEY);
+                loadCustomTemplates();
+                renderTemplates(templateCategorySelect.value);
+                showSuccessNotification('Modelos personalizados limpos com sucesso!');
+            } catch (error) {
+                showErrorNotification('Erro ao limpar modelos personalizados', error.message);
+            }
+        }
+    };
+    
+    // Função para mostrar notificação de sucesso
+    const showSuccessNotification = (message) => {
+        const existingSuccess = document.querySelector('.success-notification');
+        if (existingSuccess) existingSuccess.remove();
+        
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success-notification';
+        successDiv.innerHTML = `
+            <div class="success-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.061L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+                <span>${message}</span>
+                <button class="success-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+        `;
+        
+        document.body.appendChild(successDiv);
+        
+        setTimeout(() => {
+            if (successDiv.parentNode) successDiv.remove();
+        }, 5000);
+    };
+    
+    // --- TRATAMENTO GLOBAL DE ERROS ---
+    window.addEventListener('error', (event) => {
+        showErrorNotification(
+            'Erro JavaScript detectado',
+            `Arquivo: ${event.filename}\nLinha: ${event.lineno}\nColuna: ${event.colno}\nErro: ${event.message}`
+        );
+    });
+    
+    window.addEventListener('unhandledrejection', (event) => {
+        showErrorNotification(
+            'Erro de Promise não tratada',
+            event.reason?.message || event.reason
+        );
+    });
+    
     // --- CONSTANTES DE CHAVES E ELEMENTOS ---
     const ANALYTICS_KEY = 'geradorWhatsAnalytics';
     const HISTORY_KEY = 'geradorWhatsHistory';
@@ -381,24 +512,176 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const loadFromLocalStorage = (key) => JSON.parse(localStorage.getItem(key)) || [];
     const saveToLocalStorage = (key, data) => localStorage.setItem(key, JSON.stringify(data));
-    const saveToHistory = (newItem) => { let h = loadFromLocalStorage(HISTORY_KEY); h.unshift(newItem); if (h.length > MAX_HISTORY_ITEMS) h.pop(); saveToLocalStorage(HISTORY_KEY, h); loadHistory(); };
-    const saveTrackedLink = (newLink) => { const l = loadFromLocalStorage(ANALYTICS_KEY); l.unshift(newLink); saveToLocalStorage(ANALYTICS_KEY, l); loadAnalytics(); };
+    const saveToHistory = (newItem) => { 
+        newItem.createdAt = new Date().toISOString();
+        let h = loadFromLocalStorage(HISTORY_KEY); h.unshift(newItem); if (h.length > MAX_HISTORY_ITEMS) h.pop(); saveToLocalStorage(HISTORY_KEY, h); loadHistory(); 
+    };
+    const saveTrackedLink = (newLink) => { 
+        newLink.createdAt = new Date().toISOString();
+        const l = loadFromLocalStorage(ANALYTICS_KEY); l.unshift(newLink); saveToLocalStorage(ANALYTICS_KEY, l); loadAnalytics(); 
+    };
+    
+    // Função para decodificar mensagem da URL
+    const decodeWhatsAppMessage = (url) => {
+        try {
+            const urlObj = new URL(url);
+            const textParam = urlObj.searchParams.get('text');
+            return textParam ? decodeURIComponent(textParam) : '';
+        } catch (error) {
+            return '';
+        }
+    };
+    
+    // Função para formatar data/hora
+    const formatDateTime = (isoString) => {
+        if (!isoString) return '';
+        const date = new Date(isoString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 0) {
+            return `Hoje às ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+        } else if (diffDays === 1) {
+            return `Ontem às ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+        } else if (diffDays < 7) {
+            return `${diffDays} dias atrás`;
+        } else {
+            return date.toLocaleDateString('pt-BR', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    };
     const loadAllData = () => { loadHistory(); loadCustomTemplates(); loadAnalytics(); };
     const loadHistory = () => {
         historyListContainer.innerHTML = '';
         const history = loadFromLocalStorage(HISTORY_KEY);
-        if (history.length === 0) { historyListContainer.innerHTML = '<p class="history-empty-message">Nenhum link foi gerado ainda.</p>'; return; }
-        history.forEach(item => { const n = historyItemTemplate.content.cloneNode(true), c = n.querySelector('.history-copy-btn'); n.querySelector('.history-item-number').textContent = item.number; n.querySelector('.history-item-message').textContent = item.message || '(Sem mensagem)'; n.querySelector('.history-reuse-btn').addEventListener('click', () => { document.querySelector('input[name="generatorType"][value="whatsapp"]').click(); itiWhatsapp.setNumber(item.number); mensagemInput.value = item.message; processMessageForVariables(); window.scrollTo({ top: 0, behavior: 'smooth' }); }); c.addEventListener('click', () => copiarTexto(`https://wa.me/${item.number.replace(/\D/g, '')}?text=${encodeURIComponent(item.message)}`, c)); n.querySelector('.history-delete-btn').addEventListener('click', () => { saveToLocalStorage(HISTORY_KEY, history.filter(h => h.timestamp !== item.timestamp)); loadHistory(); }); historyListContainer.appendChild(n); });
+        if (history.length === 0) { 
+            historyListContainer.innerHTML = '<p class="history-empty-message">Nenhum link foi gerado ainda.</p>'; 
+            return; 
+        }
+        history.forEach(item => { 
+            const n = historyItemTemplate.content.cloneNode(true), c = n.querySelector('.history-copy-btn'); 
+            n.querySelector('.history-item-number').textContent = item.number; 
+            n.querySelector('.history-item-message').textContent = item.message || '(Sem mensagem)'; 
+            
+            // Adicionar horário
+            const timeElement = document.createElement('small');
+            timeElement.className = 'history-item-time';
+            timeElement.textContent = formatDateTime(item.createdAt || item.timestamp);
+            n.querySelector('.history-item-info').appendChild(timeElement);
+            
+            n.querySelector('.history-reuse-btn').addEventListener('click', () => { 
+                document.querySelector('input[name="generatorType"][value="whatsapp"]').click(); 
+                itiWhatsapp.setNumber(item.number); 
+                mensagemInput.value = item.message; 
+                processMessageForVariables(); 
+                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            }); 
+            c.addEventListener('click', () => copiarTexto(`https://wa.me/${item.number.replace(/\D/g, '')}?text=${encodeURIComponent(item.message)}`, c)); 
+            n.querySelector('.history-delete-btn').addEventListener('click', () => { 
+                saveToLocalStorage(HISTORY_KEY, history.filter(h => h.timestamp !== item.timestamp)); 
+                loadHistory(); 
+            }); 
+            historyListContainer.appendChild(n); 
+        });
     };
     const loadCustomTemplates = () => {
         customTemplateListContainer.innerHTML = '';
-        const t = loadFromLocalStorage(CUSTOM_TEMPLATES_KEY); if (t.length === 0) { customTemplateListContainer.innerHTML = '<p class="history-empty-message">Você ainda não salvou nenhum modelo.</p>'; return; }
-        t.forEach(tm => { const n = customTemplateItemTemplate.content.cloneNode(true); n.querySelector('.custom-template-item-title').textContent = tm.title; n.querySelector('.custom-template-item-text').textContent = tm.text; n.querySelector('.custom-template-use-btn').addEventListener('click', () => { document.querySelector('input[name="generatorType"][value="whatsapp"]').click(); mensagemInput.value = tm.text; processMessageForVariables(); window.scrollTo({ top: 0, behavior: 'smooth' }); }); n.querySelector('.custom-template-delete-btn').addEventListener('click', () => { if (confirm(`Tem certeza que deseja apagar o modelo "${tm.title}"?`)) { saveToLocalStorage(CUSTOM_TEMPLATES_KEY, t.filter(i => i.id !== tm.id)); loadCustomTemplates(); renderTemplates(templateCategorySelect.value); } }); customTemplateListContainer.appendChild(n); });
+        const t = loadFromLocalStorage(CUSTOM_TEMPLATES_KEY); 
+        if (t.length === 0) { 
+            customTemplateListContainer.innerHTML = '<p class="history-empty-message">Você ainda não salvou nenhum modelo.</p>'; 
+            return; 
+        }
+        t.forEach(tm => { 
+            const n = customTemplateItemTemplate.content.cloneNode(true); 
+            n.querySelector('.custom-template-item-title').textContent = tm.title; 
+            n.querySelector('.custom-template-item-text').textContent = tm.text; 
+            
+            // Adicionar horário
+            const timeElement = document.createElement('small');
+            timeElement.className = 'custom-template-item-time';
+            timeElement.textContent = formatDateTime(tm.createdAt || tm.id);
+            n.querySelector('.custom-template-item-info').appendChild(timeElement);
+            
+            // Adicionar botão de edição
+            const editBtn = document.createElement('button');
+            editBtn.className = 'icon-button custom-template-edit-btn';
+            editBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708L10.5 8.207l-3-3L12.146.146zM11.207 9.5L7 13.707V10.5a.5.5 0 0 0-.5-.5H3.207L11.207 9.5zM2 3a1 1 0 0 1 1-1h2.5a.5.5 0 0 1 0 1H3v10h10V8.5a.5.5 0 0 1 1 0V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3z"/></svg>';
+            editBtn.title = 'Editar modelo';
+            editBtn.addEventListener('click', () => openEditModal(tm));
+            
+            n.querySelector('.custom-template-use-btn').addEventListener('click', () => { 
+                document.querySelector('input[name="generatorType"][value="whatsapp"]').click(); 
+                mensagemInput.value = tm.text; 
+                processMessageForVariables(); 
+                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            }); 
+            n.querySelector('.custom-template-delete-btn').addEventListener('click', () => { 
+                if (confirm(`Tem certeza que deseja apagar o modelo "${tm.title}"?`)) { 
+                    saveToLocalStorage(CUSTOM_TEMPLATES_KEY, t.filter(i => i.id !== tm.id)); 
+                    loadCustomTemplates(); 
+                    renderTemplates(templateCategorySelect.value); 
+                } 
+            });
+            
+            // Inserir botão de edição antes do botão de deletar
+            const actionsContainer = n.querySelector('.custom-template-item-actions');
+            actionsContainer.insertBefore(editBtn, actionsContainer.lastElementChild);
+            
+            customTemplateListContainer.appendChild(n); 
+        });
     };
     const loadAnalytics = () => {
         analyticsListContainer.innerHTML = '';
-        const l = loadFromLocalStorage(ANALYTICS_KEY); if (l.length === 0) { analyticsListContainer.innerHTML = '<p class="history-empty-message">Você ainda não criou nenhum link rastreável.</p>'; return; }
-        l.forEach(lk => { const n = analyticsItemTemplate.content.cloneNode(true), s = n.querySelector('.analytics-item-shortlink'), c = n.querySelector('.copy-analytics-link-btn'); n.querySelector('.analytics-item-name').textContent = lk.name; n.querySelector('.analytics-item-destination').textContent = lk.destinationUrl; s.href = lk.shortLink; s.textContent = lk.shortLink; n.querySelector('.click-count').textContent = lk.clicks; c.addEventListener('click', () => copiarTexto(lk.shortLink, c)); n.querySelector('.delete-analytics-link-btn').addEventListener('click', () => { if (confirm(`Tem certeza que deseja apagar o registro deste link?\n${lk.shortLink}`)) { saveToLocalStorage(ANALYTICS_KEY, l.filter(i => i.id !== lk.id)); loadAnalytics(); } }); analyticsListContainer.appendChild(n); });
+        const l = loadFromLocalStorage(ANALYTICS_KEY); 
+        if (l.length === 0) { 
+            analyticsListContainer.innerHTML = '<p class="history-empty-message">Você ainda não criou nenhum link rastreável.</p>'; 
+            return; 
+        }
+        l.forEach(lk => { 
+            const n = analyticsItemTemplate.content.cloneNode(true);
+            const s = n.querySelector('.analytics-item-shortlink');
+            const c = n.querySelector('.copy-analytics-link-btn');
+            
+            // Decodificar a mensagem da URL de destino
+            const decodedMessage = decodeWhatsAppMessage(lk.destinationUrl);
+            
+            n.querySelector('.analytics-item-name').textContent = lk.name; 
+            
+            // Mostrar mensagem decodificada em vez da URL completa
+            const destinationElement = n.querySelector('.analytics-item-destination');
+            if (decodedMessage) {
+                destinationElement.textContent = decodedMessage;
+                destinationElement.style.fontStyle = 'normal';
+                destinationElement.style.color = 'var(--text-color)';
+            } else {
+                destinationElement.textContent = lk.destinationUrl;
+            }
+            
+            s.href = lk.shortLink; 
+            s.textContent = lk.shortLink; 
+            n.querySelector('.click-count').textContent = lk.clicks; 
+            
+            // Adicionar horário
+            const timeElement = document.createElement('small');
+            timeElement.className = 'analytics-item-time';
+            timeElement.textContent = formatDateTime(lk.createdAt);
+            n.querySelector('.analytics-item-info').appendChild(timeElement);
+            
+            c.addEventListener('click', () => copiarTexto(lk.shortLink, c)); 
+            n.querySelector('.delete-analytics-link-btn').addEventListener('click', () => { 
+                if (confirm(`Tem certeza que deseja apagar o registro deste link?\n${lk.shortLink}`)) { 
+                    saveToLocalStorage(ANALYTICS_KEY, l.filter(i => i.id !== lk.id)); 
+                    loadAnalytics(); 
+                } 
+            }); 
+            analyticsListContainer.appendChild(n); 
+        });
     };
     const handleExport = () => { const d = { history: loadFromLocalStorage(HISTORY_KEY), customTemplates: loadFromLocalStorage(CUSTOM_TEMPLATES_KEY), analytics: loadFromLocalStorage(ANALYTICS_KEY) }; const j = JSON.stringify(d, null, 2), b = new Blob([j], { type: 'application/json' }), u = URL.createObjectURL(b), a = document.createElement('a'); a.href = u; const ts = new Date().toISOString().slice(0, 10); a.download = `gwbrasil_backup_${ts}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); };
     const handleImport = (e) => {
@@ -449,3 +732,142 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializePage();
 });
+// Função para copiar a chave PIX
+function copyPix() {
+    const pixKey = 'poupanca@henriquetourinho.com.br';
+    navigator.clipboard.writeText(pixKey).then(() => {
+        // Feedback visual
+        const pixElement = document.querySelector('.pix-donation');
+        const originalText = pixElement.innerHTML;
+        pixElement.innerHTML = '<strong>✅ PIX copiado!</strong> <span>Cole no seu app de pagamentos</span>';
+        pixElement.style.background = 'linear-gradient(45deg, #00e785, #00c672)';
+        pixElement.style.color = '#000';
+        
+        setTimeout(() => {
+            pixElement.innerHTML = originalText;
+            pixElement.style.background = '';
+            pixElement.style.color = '';
+        }, 2000);
+    }).catch(() => {
+        alert('PIX: poupanca@henriquetourinho.com.br');
+    });
+}
+
+// Função para copiar texto genérica melhorada
+function copiarTexto(texto, botao) {
+    navigator.clipboard.writeText(texto).then(() => {
+        const originalContent = botao.innerHTML;
+        botao.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>';
+        botao.style.background = 'linear-gradient(45deg, #00e785, #00c672)';
+        botao.style.color = '#000';
+        
+        setTimeout(() => {
+            botao.innerHTML = originalContent;
+            botao.style.background = '';
+            botao.style.color = '';
+        }, 1500);
+    }).catch(() => {
+        alert('Texto copiado: ' + texto);
+    });
+}
+
+
+
+// --- MODAL DE EDIÇÃO DE MODELOS ---
+const openEditModal = (template) => {
+    // Criar modal se não existir
+    let modal = document.getElementById('edit-template-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'edit-template-modal';
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Editar Modelo</h3>
+                    <button class="modal-close" onclick="closeEditModal()">×</button>
+                </div>
+                <form id="edit-template-form">
+                    <div class="form-group">
+                        <label for="edit-template-title">Título do Modelo:</label>
+                        <input type="text" id="edit-template-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-template-text">Texto do Modelo:</label>
+                        <textarea id="edit-template-text" rows="6" required placeholder="Use {{variável}} para criar campos dinâmicos"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancelar</button>
+                        <button type="submit" class="btn-primary">Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        // Event listener para o formulário
+        document.getElementById('edit-template-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveEditedTemplate();
+        });
+        
+        // Fechar modal ao clicar fora
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeEditModal();
+        });
+    }
+    
+    // Preencher dados do template
+    document.getElementById('edit-template-title').value = template.title;
+    document.getElementById('edit-template-text').value = template.text;
+    modal.dataset.templateId = template.id;
+    
+    // Mostrar modal
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+};
+
+const closeEditModal = () => {
+    const modal = document.getElementById('edit-template-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+};
+
+const saveEditedTemplate = () => {
+    const modal = document.getElementById('edit-template-modal');
+    const templateId = parseInt(modal.dataset.templateId);
+    const newTitle = document.getElementById('edit-template-title').value.trim();
+    const newText = document.getElementById('edit-template-text').value.trim();
+    
+    if (!newTitle || !newText) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+    }
+    
+    // Atualizar template no localStorage
+    const templates = loadFromLocalStorage(CUSTOM_TEMPLATES_KEY);
+    const templateIndex = templates.findIndex(t => t.id === templateId);
+    
+    if (templateIndex > -1) {
+        templates[templateIndex].title = newTitle;
+        templates[templateIndex].text = newText;
+        templates[templateIndex].updatedAt = new Date().toISOString();
+        
+        saveToLocalStorage(CUSTOM_TEMPLATES_KEY, templates);
+        loadCustomTemplates();
+        renderTemplates(templateCategorySelect.value);
+        
+        showSuccessNotification('Modelo atualizado com sucesso!');
+        closeEditModal();
+    } else {
+        showErrorNotification('Erro ao atualizar modelo', 'Template não encontrado');
+    }
+};
+
+// Adicionar ao escopo global para uso nos event listeners
+window.openEditModal = openEditModal;
+window.closeEditModal = closeEditModal;
+window.saveEditedTemplate = saveEditedTemplate;
+
